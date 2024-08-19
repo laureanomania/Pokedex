@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokédex</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=New+Amsterdam&family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="pokedex">
+    <img src="./assets/pngwing.com.png" alt="logo pokemon" />
+    <div>
+      <h2>Elige a tu equipo y disfruta del viaje</h2>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="./index..html">Inicio</a></li>
+      </ul>
+    </nav>
+
+    <div class="pokedex-container">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Buscar Pokémon por nombre o número"
+      />
+      <div id="typeNav"></div>
+      <div id="selectedList"></div>
+      <div id="pokemonList"></div>
+      <button id="submitTeam">Ver mi Equipo</button>
+    </div>
+
+    <script src="./script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </body>
+</html>
