@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let selectedPokemons = [];
   let allPokemonData = [];
   let allPokemonTypes = new Set();
+  let currentFilterType = null; // Para guardar el tipo actual de filtro
 
   function loadSelectedPokemons() {
     selectedPokemons =
@@ -38,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
           allPokemonTypes.add(typeInfo.type.name)
         );
         updateTypeNav();
-        filterAndDisplayPokemons();
+        filterAndDisplayPokemons(); // Filtra y muestra Pokémon después de obtener todos los datos
       })
       .catch((error) =>
         console.error("Error fetching Pokémon details:", error)
@@ -48,12 +49,21 @@ document.addEventListener("DOMContentLoaded", () => {
   function filterAndDisplayPokemons() {
     pokemonList.innerHTML = "";
 
-    allPokemonData.sort((a, b) => a.id - b.id);
+    // Filtrar Pokémon según el tipo actual de filtro
+    const pokemonsToDisplay = allPokemonData
+      .filter((pokemon) => {
+        if (currentFilterType) {
+          return pokemon.types.some(
+            (typeInfo) => typeInfo.type.name === currentFilterType
+          );
+        }
+        return true; // Si no hay filtro, mostrar todos los Pokémon
+      })
+      .filter((pokemon) => !selectedPokemons.some((p) => p.id === pokemon.id))
+      .sort((a, b) => a.id - b.id);
 
-    allPokemonData.forEach((pokemon) => {
-      if (!selectedPokemons.some((p) => p.id === pokemon.id)) {
-        displayPokemon(pokemon);
-      }
+    pokemonsToDisplay.forEach((pokemon) => {
+      displayPokemon(pokemon);
     });
   }
 
@@ -116,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    filterAndDisplayPokemons();
+    filterAndDisplayPokemons(); // Refresca la lista después de seleccionar o deseleccionar un Pokémon
   }
 
   function saveSelectedPokemons() {
@@ -125,33 +135,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateTypeNav() {
     typeNav.innerHTML = "";
+
     allPokemonTypes.forEach((type) => {
       const typeButton = document.createElement("button");
       typeButton.textContent = type.charAt(0).toUpperCase() + type.slice(1);
-      typeButton.addEventListener("click", () => filterByType(type));
+      typeButton.addEventListener("click", () => {
+        currentFilterType = type;
+        filterAndDisplayPokemons(); // Aplica el filtro de tipo y muestra los resultados
+      });
       typeNav.appendChild(typeButton);
     });
 
     const allButton = document.createElement("button");
     allButton.textContent = "Todos";
-    allButton.addEventListener("click", () => filterAndDisplayPokemons());
-    typeNav.appendChild(allButton);
-  }
-
-  function filterByType(type) {
-    pokemonList.innerHTML = "";
-
-    const filteredPokemons = allPokemonData
-      .filter((pokemon) =>
-        pokemon.types.some((typeInfo) => typeInfo.type.name === type)
-      )
-      .sort((a, b) => a.id - b.id);
-
-    filteredPokemons.forEach((pokemon) => {
-      if (!selectedPokemons.some((p) => p.id === pokemon.id)) {
-        displayPokemon(pokemon);
-      }
+    allButton.addEventListener("click", () => {
+      currentFilterType = null; // Elimina el filtro de tipo
+      filterAndDisplayPokemons(); // Muestra todos los Pokémon
     });
+    typeNav.appendChild(allButton);
   }
 
   searchInput.addEventListener("input", (event) => {
@@ -174,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
     } else {
-      filterAndDisplayPokemons();
+      filterAndDisplayPokemons(); // Refresca la lista de Pokémon al quitar la búsqueda
     }
   });
 
